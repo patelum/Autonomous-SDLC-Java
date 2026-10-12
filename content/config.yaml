@@ -55,6 +55,12 @@ protect:
   - "**/src/main/resources/db/changelog/**"
   - ".github/workflows/**"
 
+# Feedback loop: "Improve the process" turns ticket retros into local changes and upstream drafts.
+feedback:
+  upstream_repo: patelum/Autonomous-SDLC-Java   # where general lessons are drafted for
+  upstream: draft              # draft = write issue files only | file = may open issues after a y | off
+  max_proposals: 5             # per improvement session
+
 # Optional: map logical modules to source roots for single-module builds.
 # Filled in by the context setup step. Maven multi-module builds usually need nothing here.
 modules: {}

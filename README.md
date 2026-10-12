@@ -89,12 +89,24 @@ your-monolith/
 │   ├── config.yaml              # build commands, gates, protected paths
 │   ├── workflows/               # defect, feature, refactor
 │   ├── roles/                   # architect, implementer, tester, reviewer, security
-│   ├── templates/               # spec, design, plan, review, status, PR description
+│   ├── templates/               # spec, design, plan, review, status, retro, PR description
+│   ├── standards/               # engineering, testing, security (team-owned, never overwritten)
+│   ├── lessons.md               # facts learned in this repo (team-owned, never overwritten)
+│   ├── improvements/            # decision log + upstream lesson drafts
 │   └── context/                 # generated: index.md + modules/*.md
 └── specs/<ticket>/              # one folder per change: artifacts + status.md
 ```
 
 With `--harness claude` the installer also writes `CLAUDE.md` (importing `AGENTS.md`), copies skills to `.claude/skills/`, renders roles as `.claude/agents/` subagents, and (if absent) writes `.claude/settings.json` allowing builds and read-only git while asking before commit, push or branch changes. Claude Code applies project permissions only after you trust the folder: run `claude` interactively in the repo once and accept the trust prompt.
+
+## Feedback loop
+
+Every finished ticket gets a `retro.md`: each rejection, human correction, retry, escalation and miss, tagged with the skill, standard or policy responsible. **Improve the process** (in the menu once retros exist) groups recurring problems and proposes concrete changes, one y/n card each:
+
+- **Locally**, applied on `y`: `lessons.md`, `standards/`, `context/`, `config.yaml`. Upgrades never overwrite these.
+- **Upstream**, drafted on `y`: anonymised `[lesson]` issues for the kit maintainers, so the skills improve for every team. Nothing is posted without a second `y`.
+
+Fixed problems become [regression scenarios](docs/scenarios/). Details: [docs/feedback-loop.md](docs/feedback-loop.md).
 
 ## Tested on
 

@@ -85,7 +85,21 @@ for d in workflows roles templates; do
   copy_dir "$CONTENT/$d" "$TARGET/.ai-sdlc/$d"
   say "$d/"
 done
-run mkdir -p "$TARGET/.ai-sdlc/context/modules"
+run mkdir -p "$TARGET/.ai-sdlc/context/modules" "$TARGET/.ai-sdlc/improvements/upstream"
+
+# Team-owned files: installed once, never overwritten (the feedback loop edits them).
+run mkdir -p "$TARGET/.ai-sdlc/standards"
+for f in "$CONTENT"/standards/*.md; do
+  dest="$TARGET/.ai-sdlc/standards/$(basename "$f")"
+  if [ -f "$dest" ]; then say "standards/$(basename "$f") exists, kept"; else run cp "$f" "$dest"; say "standards/$(basename "$f") created"; fi
+done
+if [ -f "$TARGET/.ai-sdlc/lessons.md" ]; then say "lessons.md exists, kept"; else run cp "$CONTENT/lessons.md" "$TARGET/.ai-sdlc/lessons.md"; say "lessons.md created"; fi
+[ -f "$TARGET/.ai-sdlc/improvements/log.md" ] || { [ "$DRY_RUN" -eq 1 ] || printf '# Improvement decisions\n\n<!-- Appended by "Improve the process". -->\n' > "$TARGET/.ai-sdlc/improvements/log.md"; }
+
+# Record which kit version is installed (used in upstream lesson drafts).
+KIT_VERSION="$(git -C "$KIT_DIR" describe --tags --always --dirty 2>/dev/null || echo unknown)"
+[ "$DRY_RUN" -eq 1 ] || printf '%s\n' "$KIT_VERSION" > "$TARGET/.ai-sdlc/VERSION"
+say "VERSION: $KIT_VERSION"
 
 if [ -f "$TARGET/.ai-sdlc/config.yaml" ]; then
   say "config.yaml exists, kept"
