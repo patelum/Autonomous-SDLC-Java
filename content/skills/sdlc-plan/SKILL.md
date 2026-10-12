@@ -28,6 +28,7 @@ Goal: a list of steps small enough that each can be implemented and verified on 
 
 ## Rules
 
+- Anything a quick search can settle is checked, not assumed. In particular, list the callers of every method whose signature or behaviour changes (`grep -rn "methodName("`), with `path:line`.
 - Prefer 3–8 steps. More than 10 usually means the change should be split; say so on the card's Decide line.
 - Each step touches one module where possible.
 - No step may edit a `protect:` path.

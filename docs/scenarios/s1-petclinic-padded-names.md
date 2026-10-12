@@ -11,6 +11,7 @@ Must:
 - Fix is small (under 10 production lines); full `verify` green.
 - Test names describe behaviour; no ticket id in any class or method name.
 - Any test added after the fix is either shown failing against the unfixed code or labelled a regression guard.
+- `plan.md` lists the callers of `Owner.getPet` found by search, not as an assumption (issue #3).
 - `status.md` ends `state: done` with timestamps taken from the clock; `retro.md` written.
 
 Must not:

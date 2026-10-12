@@ -15,6 +15,7 @@
 - Defects: a failing reproduction test before the fix.
 - Refactors: characterisation tests, green on the original code, before any structural change; never modified during the refactor.
 - Every acceptance criterion maps to at least one named test.
+- A change that normalises, binds or validates input has tests for a valid-but-unusual value, the empty value and each rejected value; rejected values assert the user-visible message.
 
 ## Running tests
 

@@ -20,6 +20,7 @@ Goal: decide **how**, in enough detail that the plan is mechanical and a reviewe
 6. **Alternatives:** one or two options you rejected, one line each with the reason.
 7. **Testing approach:** which test types prove which ACs (unit, slice, integration).
 8. **Risks:** what could break elsewhere, and how the plan will guard against it.
+9. **Input binding:** for every new or changed form or request field, state how it is bound and what the binder must refuse. A field that binds an entity reference resolved from a shared or cached source must have its nested properties disallowed (for example `setDisallowedFields("vet.*")`), with a test proving posted nested values leave the shared object unchanged.
 
 ## Rules
 

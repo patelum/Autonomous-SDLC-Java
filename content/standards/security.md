@@ -7,6 +7,7 @@
 
 - New endpoints and handlers use the same authorisation mechanism as their neighbours; object-level access is checked.
 - Request binding never reaches entity identifiers or nested objects the user should not control (disallowed fields, DTOs).
+- A form field that binds an entity from a shared or cached source disallows its nested properties in the binder, with a test that posting them leaves the shared object unchanged.
 - No secrets, tokens or personal data in code, logs, exceptions or responses.
 - New or upgraded libraries are checked for known vulnerabilities where tooling exists.
 

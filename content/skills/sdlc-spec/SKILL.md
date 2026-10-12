@@ -15,9 +15,10 @@ Goal: agree **what** to build, in terms a tester can check, before anyone decide
 1. Restate the problem in two or three sentences, in the user's terms.
 2. Describe current behaviour relevant to the request, citing `path:line`.
 3. Write acceptance criteria as numbered, testable statements: `AC-1: Given …, when …, then …`. Cover the main path, the important edge cases and the error cases. Each must be checkable by an automated test.
-4. List what is **out of scope** explicitly.
-5. List **assumptions** you made to fill gaps in the request. These become the Decide line on the approval card.
-6. List **open questions** only if they block a reasonable spec. Prefer a stated assumption over a question.
+4. For every new or changed **input** (form field, request parameter, message field), add ACs for: a valid but unusual value (padded, odd case, boundary), the empty value, and each rejected value, stating the exact **user-visible** message for each rejection. Raw framework or exception text is never an acceptable message.
+5. List what is **out of scope** explicitly.
+6. List **assumptions** you made to fill gaps in the request. These become the Decide line on the approval card.
+7. List **open questions** only if they block a reasonable spec. Prefer a stated assumption over a question.
 
 ## Rules
 
