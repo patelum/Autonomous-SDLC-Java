@@ -94,19 +94,20 @@ your-monolith/
 └── specs/<ticket>/              # one folder per change: artifacts + status.md
 ```
 
-With `--harness claude` the installer also writes `CLAUDE.md` (importing `AGENTS.md`), copies skills to `.claude/skills/`, renders roles as `.claude/agents/` subagents, and (if absent) writes `.claude/settings.json` allowing builds and read-only git while asking before commit, push or branch changes.
+With `--harness claude` the installer also writes `CLAUDE.md` (importing `AGENTS.md`), copies skills to `.claude/skills/`, renders roles as `.claude/agents/` subagents, and (if absent) writes `.claude/settings.json` allowing builds and read-only git while asking before commit, push or branch changes. Claude Code applies project permissions only after you trust the folder: run `claude` interactively in the repo once and accept the trust prompt.
 
 ## Tested on
 
 | App | Track | Harness | Result |
 | --- | --- | --- | --- |
 | [Spring PetClinic](https://github.com/spring-projects/spring-petclinic) (single-module Maven) | defect | Claude Code | Real bug reproduced, fixed (+2 lines), reviewed; one rejection and rework; full build green. [Trial report](docs/trials/2026-10-12-spring-petclinic.md) |
+| Spring PetClinic | feature | Claude Code | Vet on visits: cross-module dependency and schema change approved at design; 24 files, 103 tests green; security review caught a binding issue; two rejections and reworks. [Trial report](docs/trials/2026-10-12-spring-petclinic-feature.md) |
 
 ## Harness support
 
 | Harness | v0.1 status |
 | --- | --- |
-| Claude Code | Supported via `--harness claude`: skills, subagents. Tested end to end (defect track) |
+| Claude Code | Supported via `--harness claude`: skills, subagents. Tested end to end (defect and feature tracks) |
 | Codex CLI | Reads `AGENTS.md` and `.agents/skills/` natively; roles run as skills in the main session |
 | Copilot CLI, Gemini CLI, OpenCode | Should work via `AGENTS.md` + skills; untested, reports welcome |
 

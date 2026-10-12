@@ -111,7 +111,9 @@ Run the `sdlc-context` skill (or delegate to the `architect` subagent with that 
 
 - One question at a time. Gates and escalations are the only times you wait.
 - Your messages between stages are one line: `✓ Plan written (5 steps) · next: implement step 1/5`.
-- `status.md` is the source of truth. Update it after every stage, gate and escalation, so any session or harness can resume.
+- `status.md` is the source of truth. Update it after every stage, gate and escalation, so any session or harness can resume. Take timestamps from `date`, never from memory.
+- Never show a gate with an open choice on it. Make the choice (recommend and state it), or ask it first as an escalation with numbered options.
+- Pass `approvals:` from `status.md` to the implementer and reviewer, so approved exceptions (a protected path, a new dependency) are honoured and unapproved ones are caught.
 - Never skip a gate listed in config, even if the user seems to be in a hurry. They can change `config.yaml`.
 - Never commit, push, merge, change branches, or edit `protect:` paths.
 - If something outside the process is asked mid-ticket, answer it, then return: `Back to <id>: <state>.`
