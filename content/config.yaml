@@ -9,16 +9,22 @@ build:
   tool: maven                  # maven | gradle
   # Full build: unit tests, integration tests, static checks. Run once at the end.
   verify: ./mvnw -q verify
-  # Fast, scoped build for one module and what it depends on. {module} = Maven artifactId / Gradle path.
+  # Fast, scoped build for one module. {module} = a module name from modules: below
+  # (multi-module build: the Maven artifactId / Gradle project; single-module build: a package folder name).
+  # Multi-module Maven (installer default when the root pom has <modules>):
   verify_module: ./mvnw -q -pl {module} -am verify
-  # Single test class, for tight loops. {module} and {test} = fully qualified class name.
-  test_one: ./mvnw -q -pl {module} -am -Dtest={test} -Dsurefire.failIfNoSpecifiedTests=false test
+  # Single test class or pattern, for tight loops. {test} = class name, FQN or surefire pattern.
+  test_one: ./mvnw -q -Dtest={test} -Dsurefire.failIfNoSpecifiedTests=false test
   # Formatter. Leave empty if the project has none.
-  format: ""                   # e.g. ./mvnw -q spotless:apply
-  # Gradle equivalents:
+  format: ""                   # e.g. ./mvnw -q spotless:apply   or   ./mvnw -q spring-javaformat:apply
+  # Single-module Maven (installer default when the root pom has no <modules>): scope tests by package folder.
+  #   verify_module: ./mvnw -q test -Djacoco.skip=true -Dsurefire.failIfNoSpecifiedTests=false -Dtest='**/{module}/**'
+  # Gradle multi-project:
   #   verify: ./gradlew check
   #   verify_module: ./gradlew :{module}:check
-  #   test_one: ./gradlew :{module}:test --tests {test}
+  #   test_one: ./gradlew test --tests {test}
+  # Gradle single project:
+  #   verify_module: ./gradlew test --tests '*.{module}.*'
 
 # Which stages need a yes/no from a human, per track.
 # "final" is the last gate: the finished diff and review.

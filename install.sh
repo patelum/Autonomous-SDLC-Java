@@ -90,19 +90,37 @@ run mkdir -p "$TARGET/.ai-sdlc/context/modules"
 if [ -f "$TARGET/.ai-sdlc/config.yaml" ]; then
   say "config.yaml exists, kept"
 else
+  # Multi-module builds scope by build module; single-module builds scope tests by package folder.
+  LAYOUT=single
+  if [ "$BUILD_TOOL" = maven ] && grep -q '<modules>' "$TARGET/pom.xml"; then LAYOUT=multi; fi
+  if [ "$BUILD_TOOL" = gradle ] && cat "$TARGET"/settings.gradle* 2>/dev/null | grep -Eq '^[[:space:]]*include[[:space:](]'; then LAYOUT=multi; fi
   if [ "$DRY_RUN" -eq 0 ]; then
-    sed "s/^  name: my-monolith .*/  name: $PROJECT_NAME/" "$CONTENT/config.yaml" > "$TARGET/.ai-sdlc/config.yaml"
-    if [ "$BUILD_TOOL" = gradle ]; then
-      # Swap the active Maven commands for the Gradle ones documented in the file.
-      sed -i.bak \
-        -e 's|^  tool: maven .*|  tool: gradle                 # maven \| gradle|' \
-        -e 's|^  verify: ./mvnw -q verify|  verify: ./gradlew check|' \
-        -e 's|^  verify_module: ./mvnw .*|  verify_module: ./gradlew :{module}:check|' \
-        -e 's|^  test_one: ./mvnw .*|  test_one: ./gradlew :{module}:test --tests {test}|' \
-        "$TARGET/.ai-sdlc/config.yaml" && rm -f "$TARGET/.ai-sdlc/config.yaml.bak"
+    CFG="$TARGET/.ai-sdlc/config.yaml"
+    sed "s/^  name: my-monolith .*/  name: $PROJECT_NAME/" "$CONTENT/config.yaml" > "$CFG"
+    set_cmd() {  # set_cmd <key> <command>  — replace the active line for build.<key>
+      awk -v key="$1" -v cmd="$2" '$0 ~ "^  " key ": " && !done { print "  " key ": " cmd; done=1; next } { print }' "$CFG" > "$CFG.tmp" && mv "$CFG.tmp" "$CFG"
+    }
+    case "$BUILD_TOOL-$LAYOUT" in
+      maven-single)
+        set_cmd verify_module "./mvnw -q test -Djacoco.skip=true -Dsurefire.failIfNoSpecifiedTests=false -Dtest='**/{module}/**'" ;;
+      gradle-multi)
+        set_cmd tool "gradle                 # maven | gradle"
+        set_cmd verify "./gradlew check"
+        set_cmd verify_module "./gradlew :{module}:check"
+        set_cmd test_one "./gradlew test --tests {test}" ;;
+      gradle-single)
+        set_cmd tool "gradle                 # maven | gradle"
+        set_cmd verify "./gradlew check"
+        set_cmd verify_module "./gradlew test --tests '*.{module}.*'"
+        set_cmd test_one "./gradlew test --tests {test}" ;;
+    esac
+    # Pre-fill a known formatter if the build already uses one.
+    if grep -qs 'spring-javaformat-maven-plugin' "$TARGET/pom.xml"; then set_cmd format "./mvnw -q spring-javaformat:apply"
+    elif grep -qs 'spotless-maven-plugin' "$TARGET/pom.xml"; then set_cmd format "./mvnw -q spotless:apply"
+    elif cat "$TARGET"/build.gradle* 2>/dev/null | grep -q 'spotless'; then set_cmd format "./gradlew spotlessApply"
     fi
   fi
-  say "config.yaml created ($BUILD_TOOL defaults) — check the build: commands"
+  say "config.yaml created ($BUILD_TOOL, ${LAYOUT}-module defaults) — check the build: commands"
 fi
 
 run mkdir -p "$TARGET/specs"
@@ -195,6 +213,27 @@ case ",$HARNESSES," in
         render_claude_agent "$role" "$TARGET/.claude/agents/$(basename "$role")"
       done
       say ".claude/agents/ ($(ls "$CONTENT"/roles/*.md | wc -l | tr -d ' ') subagents)"
+      if [ -f "$TARGET/.claude/settings.json" ]; then
+        say ".claude/settings.json exists, kept (see README for suggested permissions)"
+      else
+        cat > "$TARGET/.claude/settings.json" <<'JSON'
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw:*)", "Bash(./gradlew:*)",
+      "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(git rev-parse:*)",
+      "Bash(grep:*)", "Bash(find:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)",
+      "Bash(wc:*)", "Bash(sort:*)", "Bash(uniq:*)", "Bash(mkdir:*)", "Bash(date:*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)", "Bash(git push:*)", "Bash(git checkout:*)", "Bash(git switch:*)",
+      "Bash(git reset:*)", "Bash(git merge:*)", "Bash(git rebase:*)", "Bash(rm:*)"
+    ]
+  }
+}
+JSON
+        say ".claude/settings.json (builds and read-only git allowed; commit, push, branch changes ask)"
+      fi
     fi
     ;;
 esac
