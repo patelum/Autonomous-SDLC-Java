@@ -60,7 +60,7 @@ Load the workflow file for the track from `.ai-sdlc/workflows/` (`defect.md`, `f
 For each stage not yet complete in `status.md`:
 
 1. **Delegate.** If the harness supports subagents and the role exists (for example the `reviewer` agent), start that subagent with: the stage skill name, the ticket id, and only the input files the workflow lists. Otherwise run the stage skill yourself, reading only those inputs.
-2. **Record.** When the stage returns, update `status.md`: mark the stage complete, add a log line, set `updated`.
+2. **Record.** When the stage returns, run `date '+%Y-%m-%d %H:%M'`, then update `status.md` with that exact time: mark the stage complete, add a log line, set `updated`. Do this every time, including after resuming a session; never reuse or extrapolate an earlier time.
 3. **Check escalations** (see `reference/escalation.md`). If one applies, show an escalation card and wait.
 4. **Gate.** If the stage is listed under `gates.<track>` in `config.yaml`, set `state: awaiting_approval` and `gate`, show the approval card (`reference/approval-card.md`), and wait.
 5. Otherwise continue to the next stage without asking.
@@ -70,7 +70,7 @@ For each stage not yet complete in `status.md`:
 The implement stage works through `plan.md` one step at a time:
 
 1. Implementer makes the change for step N.
-2. Run `build.verify_module` for the step's module (and `build.format` first, if set).
+2. Run `build.verify_module` for the step's module (and `build.format` first, if set). Substitute `{module}` with the module name and `{tests}` with `modules.<name>.tests`. Run build commands without pipes so the exit code is seen; a build whose exit code was not seen is not green.
 3. Green → mark the step done in `plan.md`, next step.
 4. Red → send the failure output back to the implementer to fix. Count attempts per step in `status.md` under `retries`. When attempts reach `orchestrator.retry_budget`, stop and escalate with the failing check and the last attempt.
 

@@ -119,6 +119,13 @@ else
     elif grep -qs 'spotless-maven-plugin' "$TARGET/pom.xml"; then set_cmd format "./mvnw -q spotless:apply"
     elif cat "$TARGET"/build.gradle* 2>/dev/null | grep -q 'spotless'; then set_cmd format "./gradlew spotlessApply"
     fi
+    # No wrapper in the repo: use the build tool on the PATH instead (applies to every command above).
+    if [ "$BUILD_TOOL" = maven ] && [ ! -f "$TARGET/mvnw" ]; then
+      sed -i.bak 's#\./mvnw #mvn #g' "$CFG" && rm -f "$CFG.bak"; say "no Maven wrapper found: commands use 'mvn'"
+    fi
+    if [ "$BUILD_TOOL" = gradle ] && [ ! -f "$TARGET/gradlew" ]; then
+      sed -i.bak 's#\./gradlew #gradle #g' "$CFG" && rm -f "$CFG.bak"; say "no Gradle wrapper found: commands use 'gradle'"
+    fi
   fi
   say "config.yaml created ($BUILD_TOOL, ${LAYOUT}-module defaults) — check the build: commands"
 fi
@@ -220,7 +227,7 @@ case ",$HARNESSES," in
 {
   "permissions": {
     "allow": [
-      "Bash(./mvnw:*)", "Bash(./gradlew:*)",
+      "Bash(./mvnw:*)", "Bash(./gradlew:*)", "Bash(mvn:*)", "Bash(gradle:*)",
       "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(git rev-parse:*)",
       "Bash(grep:*)", "Bash(find:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)",
       "Bash(wc:*)", "Bash(sort:*)", "Bash(uniq:*)", "Bash(mkdir:*)", "Bash(date:*)"

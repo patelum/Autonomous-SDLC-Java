@@ -19,6 +19,10 @@ build:
   format: ""                   # e.g. ./mvnw -q spotless:apply   or   ./mvnw -q spring-javaformat:apply
   # Single-module Maven (installer default when the root pom has no <modules>): scope tests by package folder.
   #   verify_module: ./mvnw -q test -Djacoco.skip=true -Dsurefire.failIfNoSpecifiedTests=false -Dtest='**/{module}/**'
+  # Logical modules inside one large build module: use {tests}, filled from modules.<name>.tests below.
+  #   verify_module: ./mvnw -q -pl app -am test -Dsurefire.failIfNoSpecifiedTests=false -Dtest='{tests}'
+  #   Surefire patterns: a full package path has no leading **/ (org/acme/billing/**); a folder name does (**/billing/**).
+  # Never pipe build commands through head/tail: the exit code is lost. -q keeps output short.
   # Gradle multi-project:
   #   verify: ./gradlew check
   #   verify_module: ./gradlew :{module}:check
@@ -55,6 +59,8 @@ protect:
 # Filled in by the context setup step. Maven multi-module builds usually need nothing here.
 modules: {}
 #  billing:
-#    paths: [src/main/java/com/acme/billing]
+#    paths: [src/main/java/com/acme/billing, src/test/java/com/acme/billing]
+#    tests: com/acme/billing/**                 # substituted for {tests} in verify_module
 #  orders:
-#    paths: [src/main/java/com/acme/orders]
+#    paths: [src/main/java/com/acme/orders, src/test/java/com/acme/orders]
+#    tests: com/acme/orders/**

@@ -102,12 +102,13 @@ With `--harness claude` the installer also writes `CLAUDE.md` (importing `AGENTS
 | --- | --- | --- | --- |
 | [Spring PetClinic](https://github.com/spring-projects/spring-petclinic) (single-module Maven) | defect | Claude Code | Real bug reproduced, fixed (+2 lines), reviewed; one rejection and rework; full build green. [Trial report](docs/trials/2026-10-12-spring-petclinic.md) |
 | Spring PetClinic | feature | Claude Code | Vet on visits: cross-module dependency and schema change approved at design; 24 files, 103 tests green; security review caught a binding issue; two rejections and reworks. [Trial report](docs/trials/2026-10-12-spring-petclinic-feature.md) |
+| [Apache Roller](https://github.com/apache/roller) (multi-module Maven, no wrapper) | refactor | Claude Code | Split a 1,100-line `Utilities` class: 48 characterisation tests pinned original behaviour, 3 latent bugs found and preserved, 536 tests green. [Trial report](docs/trials/2026-10-12-apache-roller-refactor.md) |
 
 ## Harness support
 
 | Harness | v0.1 status |
 | --- | --- |
-| Claude Code | Supported via `--harness claude`: skills, subagents. Tested end to end (defect and feature tracks) |
+| Claude Code | Supported via `--harness claude`: skills, subagents. Tested end to end (defect, feature and refactor tracks) |
 | Codex CLI | Reads `AGENTS.md` and `.agents/skills/` natively; roles run as skills in the main session |
 | Copilot CLI, Gemini CLI, OpenCode | Should work via `AGENTS.md` + skills; untested, reports welcome |
 
