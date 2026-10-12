@@ -4,6 +4,6 @@
      Upgrades never overwrite it. Entries are added by "Improve the process" (after your y) or by hand.
      Keep each entry one or two lines, with its source. Remove entries that stop being true. -->
 
-<!-- Example:
-- `messages_en.properties` is intentionally empty; English text lives in `messages.properties`. (PET-12 retro)
+<!-- Example (delete once you have real entries):
+- The integration tests in `billing` need the `it` profile: run them with `-Pit`. (source: BILL-42 retro)
 -->

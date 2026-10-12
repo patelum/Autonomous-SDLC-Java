@@ -120,6 +120,7 @@ Run the `sdlc-improve` skill. It writes any missing retros, groups recurring fin
 ## Rules for you
 
 - One question at a time. Gates and escalations are the only times you wait.
+- Whenever you wait, your message ends with the full card, menu or question. Never only announce it.
 - Your messages between stages are one line: `✓ Plan written (5 steps) · next: implement step 1/5`.
 - `status.md` is the source of truth. Update it after every stage, gate and escalation, so any session or harness can resume. Take timestamps from `date`, never from memory.
 - Never show a gate with an open choice on it. Make the choice (recommend and state it), or ask it first as an escalation with numbered options.

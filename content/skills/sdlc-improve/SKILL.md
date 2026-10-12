@@ -21,7 +21,7 @@ If `config.yaml` has no `feedback:` section (older installs), use the defaults: 
 ## 2. Group and rank
 
 1. Group findings that share a component and a cause, across tickets ("review under-rated user-facing error text" in two tickets is one group).
-2. Drop groups already handled: the fix is already in `lessons.md`, `standards/`, `context/` or `config.yaml`, or the installed skill text already contains the rule (the kit was fixed since).
+2. Drop groups already handled: the fix is already in `lessons.md`, `standards/`, `context/` or `config.yaml`. For any **upstream** part, first search the installed kit files (`.agents/skills/`, `.ai-sdlc/roles/`, `.ai-sdlc/workflows/`, `.ai-sdlc/templates/`) for the rule; if the kit already contains it, drop the upstream part and say `already in kit <VERSION>`. Tickets delivered on an older kit often hit problems the kit has since fixed.
 3. Rank by: number of tickets affected, then kind (`missed` and `rejection` > `must_fix` and `escalation` > `retry` and `human_edit` > `unverified`), then cost of the miss.
 4. Take at most `feedback.max_proposals` (default 5) proposals per session. Say how many more remain.
 
@@ -39,7 +39,7 @@ For each group, decide where the fix belongs:
 
 Never edit installed skills, roles, workflows or templates in this repo: upgrades overwrite them, so the lesson would be lost. Put the local workaround in `standards/` or `lessons.md`, and the real fix upstream.
 
-Show one card per proposal and wait:
+Show one card per proposal and wait. The card is the last thing in your message, printed in full; do any checks before writing it:
 
 ```text
 PROPOSAL <n>/<total> · <component> · scope <repo | kit | both>

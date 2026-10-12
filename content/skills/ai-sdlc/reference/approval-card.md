@@ -16,6 +16,7 @@ Approve? [y / n]
 
 ## Writing the card
 
+- **The card is the last thing in your message**, printed in full, every time it is shown (including a re-show after a revision). Do any checks before writing it; never end a turn with "ready for your y or n" without the card itself.
 - **What** and **Why** are one line each. No adjectives, no restating the title.
 - **Touches** names modules from `.ai-sdlc/context/index.md`. On the final gate, give files changed and lines added/removed.
 - **Evidence** is facts: `module build green · 14 tests added · review: 0 must-fix, 2 consider`. On spec and design gates, say what was read: `request.md, context/modules/billing.md, InvoiceService.java`.
